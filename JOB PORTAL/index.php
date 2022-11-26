@@ -20,7 +20,7 @@
 	</div>
 <?php unset($_SESSION['warning']); } ?>
 <?php $topics = getAllTopics();	?>
-<?php $posts = getAllPublishedPosts();	?>
+<?php $posts = getAllTop10PublishedPosts();	?>
 
 <body>
 	<div class="main-container d-flex">	

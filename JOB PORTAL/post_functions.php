@@ -41,7 +41,7 @@ function getAllPublishedPosts()
 function getAllUnpublishedPosts()
 {
 	global $conn;
-	$sql = "SELECT * FROM posts WHERE published=false";
+	$sql = "SELECT * FROM posts WHERE published=false ORDER BY created_at DESC";
 	$result = mysqli_query($conn, $sql);
 	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -52,7 +52,28 @@ function getAllUnpublishedPosts()
 	}
 	return $final_posts;
 }
+function getAllTop10PublishedPosts()
+{
+	global $conn;
+	$sql = "SELECT * FROM posts WHERE published=true ORDER BY created_at DESC LIMIT 4";
+	$result = mysqli_query($conn, $sql);
+	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+	$final_posts = array();
+	foreach ($posts as $post) {
+		$post['author'] = getPostAuthorById($post['user_id']);
+		array_push($final_posts, $post);
+	}
+	return $final_posts;
+}
+function getAllComapnies()
+{
+	global $conn;
+	$sql = "SELECT * FROM company ORDER BY name ASC";
+	$result = mysqli_query($conn, $sql);
+	$companies = mysqli_fetch_all($result, MYSQLI_ASSOC);
+	return $companies;
+}
 // get all posts from DB
 function getAllCompanyPosts()
 {
@@ -72,6 +93,29 @@ function getAllCompanyPosts()
 		}
 		return $final_posts;
 	}
+}
+function getAllCompanyPostsByID($id)
+{
+	global $conn;
+	$sql = "SELECT * FROM posts WHERE user_id=$id";
+
+	$result = mysqli_query($conn, $sql);
+	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+	$final_posts = array();
+	foreach ($posts as $post) {
+		$post['author'] = getPostAuthorById($post['user_id']);
+		array_push($final_posts, $post);
+	}
+	return $final_posts;
+}
+function getCompanyInfo($id)
+{
+	global $conn;
+	$sql = "SELECT * FROM company WHERE id='$id' LIMIT 1";
+	$result = mysqli_query($conn, $sql);
+	$info = mysqli_fetch_assoc($result);
+	return $info;
 }
 // get the author/username of a post
 function getPostAuthorNameById($user_id)

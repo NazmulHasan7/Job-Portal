@@ -14,10 +14,10 @@
                     <a class="nav-link" href="index.php"> <i class="fa-solid fa-house-user"></i> &nbsp;Home</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="restrict.html"><i class="fas fa-briefcase"></i> &nbsp;Jobs</a>
+                    <a class="nav-link" href="jobs.php"><i class="fas fa-briefcase"></i> &nbsp;Jobs</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="restrict.html"><i class="fas fa-university"></i> &nbsp;Companies</a>
+                    <a class="nav-link" href="companies.php"><i class="fas fa-university"></i> &nbsp;Companies</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="contact.php" style="cursor: pointer;"><i class="fa-solid fa-envelope"></i> &nbsp;Contact</a>
