@@ -51,7 +51,7 @@
 										<div class="card-body" style="padding: 5px;">
 											<h5 class="card-title"><?php echo $post['title'] ?></h5>
 											<p class="card-text" style="overflow: hidden; max-width: 75ch; text-overflow: ellipsis; white-space: nowrap;"><?php $company_info = getPostAuthorById($post['user_id']); echo $company_info['office_address']; ?></p>
-											<a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $post['slug']; ?>">Read More</a>
+											<a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $post['slug']; ?>">Read More</a> <span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expires: <?php echo date("F j, Y, g:i a ", strtotime($post['updated_at'])); ?></span>
 										</div>
 										</div>
 									</div>

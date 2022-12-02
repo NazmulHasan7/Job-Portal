@@ -22,12 +22,13 @@ function getAllPosts()
 		$post['author'] = getPostAuthorById($post['user_id']);
 		array_push($final_posts, $post);
 	}
+	updateExpiration();
 	return $final_posts;
 }
 function getAllPublishedPosts()
 {
 	global $conn;
-	$sql = "SELECT * FROM posts WHERE published=true";
+	$sql = "SELECT * FROM posts WHERE published=true AND expired=0";
 	$result = mysqli_query($conn, $sql);
 	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -36,6 +37,7 @@ function getAllPublishedPosts()
 		$post['author'] = getPostAuthorById($post['user_id']);
 		array_push($final_posts, $post);
 	}
+	updateExpiration();
 	return $final_posts;
 }
 function getAllUnpublishedPosts()
@@ -50,12 +52,13 @@ function getAllUnpublishedPosts()
 		$post['author'] = getPostAuthorById($post['user_id']);
 		array_push($final_posts, $post);
 	}
+	updateExpiration();
 	return $final_posts;
 }
 function getAllTop10PublishedPosts()
 {
 	global $conn;
-	$sql = "SELECT * FROM posts WHERE published=true ORDER BY created_at DESC LIMIT 4";
+	$sql = "SELECT * FROM posts WHERE published=true AND expired=0 ORDER BY created_at DESC LIMIT 5";
 	$result = mysqli_query($conn, $sql);
 	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
@@ -64,6 +67,7 @@ function getAllTop10PublishedPosts()
 		$post['author'] = getPostAuthorById($post['user_id']);
 		array_push($final_posts, $post);
 	}
+	updateExpiration();
 	return $final_posts;
 }
 function getAllComapnies()
@@ -91,13 +95,14 @@ function getAllCompanyPosts()
 			$post['author'] = getPostAuthorById($post['user_id']);
 			array_push($final_posts, $post);
 		}
+		updateExpiration();
 		return $final_posts;
 	}
 }
 function getAllCompanyPostsByID($id)
 {
 	global $conn;
-	$sql = "SELECT * FROM posts WHERE user_id=$id";
+	$sql = "SELECT * FROM posts WHERE user_id=$id AND expired=0";
 
 	$result = mysqli_query($conn, $sql);
 	$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
@@ -115,6 +120,7 @@ function getCompanyInfo($id)
 	$sql = "SELECT * FROM company WHERE id='$id' LIMIT 1";
 	$result = mysqli_query($conn, $sql);
 	$info = mysqli_fetch_assoc($result);
+	updateExpiration();
 	return $info;
 }
 // get the author/username of a post
@@ -158,6 +164,7 @@ function createPost($request_values){
 		$title = esc($request_values['title']);
 		$body = htmlentities(esc($request_values['body']));
 		$user_id = $_SESSION['user']['id'];
+		$expiration_date = $request_values['due-date'];
 
 		if (isset($request_values['topic_id'])) {
 			$topic_id = esc($request_values['topic_id']);
@@ -183,7 +190,7 @@ function createPost($request_values){
 		}
 		// create post if there are no errors in the form
 		if (count($errors) == 0) {
-			$query = "INSERT INTO posts (user_id, title, slug, body, highlight, created_at, updated_at) VALUES($user_id, '$title', '$post_slug', '$body', '$body', now(), now())";
+			$query = "INSERT INTO posts (user_id, title, slug, body, highlight, created_at, updated_at) VALUES($user_id, '$title', '$post_slug', '$body', '$body', now(), '$expiration_date')";
 			if(mysqli_query($conn, $query)){ // if post created successfully
 				$inserted_post_id = mysqli_insert_id($conn);
 				// create relationship between post and topic
@@ -306,4 +313,76 @@ function createPost($request_values){
             exit(0);
         }
     }
+
+	/*------------SEARCH--------------- */
+	function getPostTopicId($post_id){
+		$conn = mysqli_connect("localhost", "root", "", "job_portal");
+		$sql = "SELECT * FROM post_topic WHERE post_id=$post_id LIMIT 1";
+		$result = mysqli_query($conn, $sql);
+		$topic = mysqli_fetch_assoc($result);
+		return $topic['topic_id'];
+	}
+	if(isset($_POST['search_submit'])){
+		$cat_id = $_POST['category'];
+		$text = $_POST['search'];
+		$url = 'search.php';
+		$url .= '?category=' .$cat_id;
+		$url .= '&search=' .$text;
+		header('Location: '.$url);
+		exit(0);
+	}
+	function getSearchedPost($topic_id, $text) {
+		$conn = mysqli_connect("localhost", "root", "", "job_portal");
+		$sql = "SELECT * FROM posts WHERE title LIKE '%$text%' AND published=true";
+		$result = mysqli_query($conn, $sql);
+		// fetch all posts as an associative array called $posts
+		$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+		$final_posts = array();
+		foreach ($posts as $post) {
+			$post_topic_id = getPostTopicId($post['id']);
+			if($post_topic_id == $topic_id || $topic_id == 0){
+				array_push($final_posts, $post);
+			}
+		}
+		return $final_posts;		
+	}
+	function updateExpiration(){
+		$conn = mysqli_connect("localhost", "root", "", "job_portal");
+		$sql = "SELECT * FROM posts WHERE expired=0";
+		$result = mysqli_query($conn, $sql);
+		$posts = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+		foreach ($posts as $post) {
+			$expiration_date = strtotime($post['updated_at']);
+			$present_date = time();
+			if($expiration_date < $present_date){
+				$post_id = $post['id'];
+				$sql = "UPDATE posts SET expired=1 WHERE id=$post_id";
+				$result = mysqli_query($conn, $sql);
+			}
+		}
+	}
+
+	if(isset($_POST['approveCV'])){
+		approveApplicant();
+	}
+	function approveApplicant(){
+		//$applicat = $_POST['companyid'];
+		//$company = $_POST['postid'];
+		$id = $_POST['applicantid'];
+		$location = $_POST['location'];
+		$time =  $_POST['due-date'];
+		$slug = $_POST['slug']; 
+
+		$conn = mysqli_connect("localhost", "root", "", "job_portal");
+		$sql = "UPDATE job_apply SET location='$location', approved=1, interview_date='$time' WHERE id='$id'";
+
+		if (mysqli_query($conn, $sql)) {
+			$url = 'single_post_auth.php';
+			$url .= '?post-slug=' .$slug;
+			header('Location: '.$url);
+            exit(0);
+        }
+	}
 ?>

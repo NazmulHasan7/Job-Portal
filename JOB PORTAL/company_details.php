@@ -45,6 +45,7 @@ if (isset($_GET['comp_id'])) {
                                 <h5 class="card-title"><?php echo $company_post['title'] ?></h5>
                                 <p class="card-text"><?php echo html_entity_decode($company_post['highlight']) ?></h5></p>
                                 <a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $company_post['slug']; ?>">Read More</a>
+                                <span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expires: <?php echo date("F j, Y, g:i a ", strtotime($company_post['updated_at'])); ?></span>
                             </div>
                             </div>
                         </div>

@@ -65,6 +65,9 @@
                 <?php if ($post['published'] == false): ?>
 				    <p style="color: red; text-align: center;">This job post is not published yet</p> <br>
                 <?php endif ?>
+                <?php if ($post['expired'] == false): ?>
+                    <p class="error-p" style="text-align: center; width: 500px;">Last Date to Apply: <?php echo date("F j, Y, g:i a ", strtotime($post['updated_at'])); ?></p>
+                <?php endif ?>
         </div>
         <div class="mx-5 mb-2">
             <?php echo html_entity_decode($post['body']); ?>

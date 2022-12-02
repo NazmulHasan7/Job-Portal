@@ -18,6 +18,30 @@
 	}
 ?>
 
+    <div class="modal fade bd-example-modal-sm" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true" id="interviewSchedule">
+        <div class="modal-dialog modal-dialog-centered modal-sm" role="document">
+            <div class="modal-content p-2">
+				<div class="modal-body" style="padding-bottom: 0px; padding-top: 0px; font-family: 'Oswald';">
+                    <h4 style="padding-top:20px; font-weight:bolder; text-align: center;">SET APPOINTMENT</h4>
+					<form  action="post_functions.php" method="post" enctype="multipart/form-data">
+                        <input type="hidden" name="applicantid" id="applicant_id" value="">
+                        <input type="hidden" name="slug" value="<?php echo $_GET['post-slug']; ?>">
+						<div class="form-group" style="padding-bottom: 15px !important;">
+                            <label class="my-2"><i class="far fa-calendar-edit"></i> INTERVIEW TIME</label>
+                            <input type="datetime-local" class="form-control" name="due-date" style="padding-top:8px !important; padding-bottom:8px !important;" required>
+                            <label class="my-2"><i class="far fa-location-circle"></i> LOCATION</label>
+                            <input type="text" name="location"  class="form-control" value="<?php echo $company_info['office_address']; ?>" required>
+						</div>
+						<div class="modal-footer" style="border: 0;">
+							<button type="button" class="btn text-light login-btn modal-btn" data-bs-dismiss="modal" style="background: red;">Close</button>
+							<button type="submit" class="btn text-light login-btn modal-btn" style="background: #0BDA14;" name="approveCV">Approve</button>
+						</div>
+					</form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 <body>
 	<div class="main-container d-flex">	
 		<div class="content" style="width: 100%;">
@@ -41,6 +65,9 @@
                 <?php if ($post['published'] == false): ?>
 				    <p style="color: red; text-align: center;">This job post is not published yet</p> <br>
                 <?php endif ?>
+                <?php if ($post['expired'] == false): ?>
+                    <p class="error-p" style="text-align: center; width: 500px;">Last Date to Apply: <?php echo date("F j, Y, g:i a ", strtotime($post['updated_at'])); ?></p>
+                <?php endif ?>
         </div>
         <div class="mx-5 mb-2">
             <?php echo html_entity_decode($post['body']); ?>
@@ -49,16 +76,21 @@
                     <table class="table table-striped table-hover message-table cat-table" style="border-collapse: collapse; width: 50%; margin-top: 20px; margin-left: auto; margin-right: auto;">
                         <thead>
                             <th style="width: 50%;"><i class="far fa-briefcase"></i> Applicant Name</th>
-                            <th style="text-align: right;"><i class="fas fa-file-pdf"></i> Resume</th>
+                            <th style="text-align: right;"><i class="fas fa-cog"></i> Action</th>
                         </thead>
                         <tbody>
-                            <?php foreach ($applicants as $applicant): $user = getUserById($applicant['user_id']); ?>
+                            <?php foreach ($applicants as $applicant): $user = getUserById($applicant['user_id']);?>
                             <tr>
                                 <td> <?php echo $user['name']; ?></a></td>
                                 <td style="text-align: right;">
+                                    <?php if(!($applicant['approved'])): ?>
+                                        <button onclick="setInterviewSchedule('<?php echo $applicant['id']; ?>')"><i class="far fa-check-circle" style="color:red; font-size: 22px;" title="Approve"></i></button>
+                                    <?php else: ?>
+                                        <span>Approved</span>
+                                    <?php endif ?>
                                     <a href="<?php echo 'static/userCV/' . $applicant['cv']; ?>" style="text-decoration:none" download>
-                                        <i class="fas fa-arrow-to-bottom fa-2x" style="color: red; font-size: 22px;" title="Download"></i>
-                                    </a><?php echo $applicant['cv']; ?>
+                                        <i class="far fa-arrow-circle-down px-1" style="color:red; font-size:22px;" title="Download"></i>
+                                    </a>
                                 </td>
                             </tr>
                             <?php endforeach ?>
@@ -84,6 +116,9 @@
 </script><script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
-	
+	function setInterviewSchedule(applicant_id){
+        document.getElementById("applicant_id").value = applicant_id;
+        $('#interviewSchedule').modal('show');
+    }
 </script>
 

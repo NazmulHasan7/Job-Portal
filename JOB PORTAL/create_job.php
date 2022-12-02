@@ -44,16 +44,17 @@
 					<input type="hidden" name="post_id" value="<?php echo $post_id; ?>">
 				<?php endif ?>
 
-				<input class="mb-3" type="text" name="title" value="<?php echo $title; ?>" placeholder="Title of the job" required>
-				<textarea class="mb-3" name="body" id="body" cols="30" rows="10" required><?php echo $body; ?></textarea>
-				<select name="topic_id" required class="form-select form-select-lg bg-light my-3">
+				<input class="mb-2" type="text" name="title" value="<?php echo $title; ?>" placeholder="Title of the job" required>
+				<textarea class="mb-2" name="body" id="body" cols="30" rows="10" required><?php echo $body; ?></textarea>
+				<select name="topic_id" required class="form-select form-select-lg bg-light my-2">
 					<option value="" selected disabled>Choose Job Category</option>
 					<?php foreach ($topics as $topic): ?>
 						<option value="<?php echo $topic['id']; ?>">
 							<?php echo $topic['name']; ?>
 						</option>
 					<?php endforeach ?>
-				</select>				
+				</select>
+				<input class="mb-2" type="datetime-local" class="form-control" name="due-date" style="padding-top:5px !important; padding-bottom:5px !important; border:2px solid black !important" required>			
 				<!-- if editing post, display the update button instead of create button -->
 				<?php if ($isEditingPost === true): ?> 
 					<button type="submit" class="btn btn-primary text-white" name="update_post">UPDATE</button>

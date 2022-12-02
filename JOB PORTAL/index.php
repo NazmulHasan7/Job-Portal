@@ -28,21 +28,25 @@
 		<?php include('includes/menubar.php') ?>
 						
 			<div class="d-flex justify-content-center search-box">
-
+			
 				<div class="input-group" style="height: 30px; margin-top: 100px; opacity: 100%;">
 					<div class="input-group-text p-0">
-						<select class="form-select form-select-lg shadow-none bg-light border-0">
-							<option value="">Category</option>
-							<option value="">Resources</option>
-							<option value="">Project</option>
-							<option value="">Blog Post</option>
+						<form method="post" action="post_functions.php">
+						<select class="form-select form-select-lg shadow-none bg-light border-0" name="category">
+							<option value="0">Select Job Category</option>
+							<?php if (!empty($topics)): ?>	
+								<?php foreach ($topics as $topic): ?>
+									<option value="<?php echo $topic['id'] ?>"><?php echo $topic['name'] ?></option>
+								<?php endforeach ?>
+                			<?php endif ?>
 						</select>
 					</div>
-					<input type="search" class="form-control" name="search" placeholder="Search Your Desired Job Here">
-					<button class="input-group-text shadow-none px-3 btn-warning" style="background: #2ac4ea; border-color:#2ac4ea; color:white">
+					<input type="search" class="form-control" name="search" placeholder="Search Your Desired Job Here" required>
+					<button type="submit" name="search_submit" class="input-group-text shadow-none px-3 btn-warning" style="background: #2ac4ea; border-color:#2ac4ea; color:white">
 						<i class="fa-solid fa-magnifying-glass"></i>
 					</button>
 				</div>
+				</form>
 			</div>
 
 			<div class="container-fluid px-4">
@@ -80,7 +84,7 @@
 										<div class="card-body" style="padding: 5px;">
 											<h5 class="card-title"><?php echo $post['title'] ?></h5>
 											<p class="card-text" style="overflow: hidden; max-width: 75ch; text-overflow: ellipsis; white-space: nowrap;"><?php $company_info = getPostAuthorById($post['user_id']); echo $company_info['office_address']; ?></p>
-											<a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $post['slug']; ?>">Read More</a>
+											<a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $post['slug']; ?>">Read More</a><span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expires: <?php echo date("F j, Y, g:i a ", strtotime($post['updated_at'])); ?></span>
 										</div>
 										</div>
 									</div>

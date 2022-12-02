@@ -104,17 +104,25 @@
                 <?php if(!empty($job_list)): ?>
                     <table class="table table-striped table-hover message-table cat-table" style="border-collapse: collapse; width: 100%; margin-top: 20px;">
                         <thead>
-                            <th style="width: 50%;"><i class="far fa-briefcase"></i> JOB TITLE</th>
-                            <th style="text-align: right;"><i class="fas fa-file-pdf"></i> RESUME</th>
+                            <th style="width: 40%;"><i class="far fa-briefcase"></i> JOB TITLE</th>
+                            <th style="text-align: right;"><i class="fas fa-cog"></i> APPLICATION STATUS</th>
                         </thead>
                         <tbody>
                             <?php foreach ($job_list as $job): $job_post = getPostById($job['post_id']); ?>
                             <tr>
-                                <td><a class="px-3" style="color:blue" style="text-decoration:none; color:black" href="single_post.php?post-slug=<?php echo $job_post['slug']; ?>"><i class="fas fa-external-link"></i></a> <?php echo $job_post['title']; ?></a></td>
-                                <td style="text-align: right;">
+                                <td>
                                     <a href="<?php echo 'static/userCV/' . $job['cv']; ?>" style="text-decoration:none" download>
-                                        <i class="fas fa-arrow-to-bottom fa-2x" style="color: red; font-size: 22px;" title="Download"></i>
-                                    </a><?php echo $job['cv']; ?>
+                                        <i class="far fa-arrow-circle-down" style="color: red; font-size: 18px;" title="Download CV"></i>
+                                    </a>
+                                    <a class="px-2" style="color:blue" style="text-decoration:none; color:black" href="single_post.php?post-slug=<?php echo $job_post['slug']; ?>"><i class="fas fa-external-link"></i></a> <?php echo $job_post['title']; ?></a>
+                                </td>
+                                <td style="text-align: right; text-overflow: none; white-space: normal;">
+                                    <?php if(!($job['approved'])): ?>
+                                        <span>Not approved yet</span>
+                                    <?php else: ?>
+                                        <span><strong>Interviw On:</strong> <?php echo date("F j, Y, g:i a ", strtotime($job['interview_date'])); ?> <br>
+                                            <strong>Location:</strong> <?php echo $job['location']; ?></span>
+                                    <?php endif ?>
                                 </td>
                             </tr>
                             <?php endforeach ?>

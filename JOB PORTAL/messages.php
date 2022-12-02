@@ -13,7 +13,7 @@
     $previous_page = 1;
 ?>
 
-<title>ADMIN | MANAGE JOBS</title>
+<title>ADMIN | MESSAGES</title>
 <link rel="shortcut icon" href="static/icons/logo.png">
 
 <?php if (isset($_SESSION['warning'])){ ?>
@@ -63,7 +63,7 @@
 
                 <!-- TABLE -->
                 <?php if (empty($messages)): ?>
-				<h4 style="text-align: center; font-weight:bolder;">NO MESAGES TO SHOW</h4>
+				<h4 style="text-align: center; font-weight:bolder;">NO MESSAGES TO SHOW</h4>
                 <p style="text-align: center;"><i class="fal fa-comment-alt-slash fa-10x" style="padding-top: 70px; padding-bottom: 100px"></i></p>
                 <?php else: ?>
 
@@ -88,13 +88,13 @@
 							<td data-label="Message"><?php echo date("F j, Y ", strtotime($message['submitted_on'])); ?> | <?php echo $message['subject']; ?> <br> <?php echo $message['message']; ?></td>
 							<td style="text-align: right;" data-label="Actions">                            
                                 <button onclick="viewMessageFromContact('<?php echo $message['id']; ?>')">
-                                    <i class="fas fa-envelope-open fa-2x" style="color: red; font-size: 22px;" title="View"></i>
+                                    <i class="fal fa-envelope-open-text fa-2x" style="color: red; font-size: 22px;" title="View"></i>
                                 </button>
-                                <button onclick="viewMessageFromContact('<?php echo $message['id']; ?>')">
-                                    <i class="fas fa-external-link fa-2x px-1" style=" font-size: 20px; color:red" title="Reply"></i>
-                                </button>
+                                <a href="mailto:<?php echo $message['email']; ?>?subject=<?php echo $message['subject']; ?>">
+                                    <i class="fal fa-paper-plane fa-2x px-1" style=" font-size: 20px; color:red" title="Reply"></i>
+                                </a>
                                 <button onclick="deleteMessageFromContact('<?php echo $message['id']; ?>')">
-                                    <i class="fas fa-trash" style="font-size: 19px; color:red" title="Delete"></i>
+                                    <i class="fal fa-trash-alt fa-3x" style="font-size: 19px; color:red" title="Delete"></i>
                                 </button>	
 							</td>
 						</tr>

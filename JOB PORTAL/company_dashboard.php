@@ -47,13 +47,14 @@
             <div class="row mx-2">
                 <h5 style="text-align: center;"><i class="fas fa-check-circle" style="color:greenyellow"></i> Apporoved Job post</h5><br><br>
                 <?php foreach ($company_posts as $company_post): 
-                    if($company_post['published'] == 1): ?>
+                    if($company_post['published'] == 1 && $company_post['expired'] == 0): ?>
                         <div class="col-sm-6" style="margin-bottom: 20px;">
                             <div class="card" style="box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo $company_post['title'] ?></h5>
                                 <p class="card-text"><?php echo html_entity_decode($company_post['highlight']) ?></h5></p>
                                 <a class="btn btn-primary" href="single_post_auth.php?post-slug=<?php echo $company_post['slug']; ?>">Read More</a>
+                                <span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expires: <?php echo date("F j, Y, g:i a ", strtotime($company_post['updated_at'])); ?></span>
                             </div>
                             </div>
                         </div>
@@ -68,7 +69,25 @@
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo $company_post['title'] ?></h5>
                                 <p class="card-text"><?php echo html_entity_decode($company_post['highlight']) ?></h5></p>
-                                <a class="btn btn-primary" href="single_post.php?post-slug=<?php echo $company_post['slug']; ?>">Read More</a>
+                                <a class="btn btn-primary" href="single_post_auth.php?post-slug=<?php echo $company_post['slug']; ?>">Read More</a>
+                                <span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expires: <?php echo date("F j, Y, g:i a ", strtotime($company_post['updated_at'])); ?></span>
+                            </div>
+                            </div>
+                            </div>
+                        </div>
+                    <?php endif ?>
+				<?php endforeach ?>
+
+                <h5 style="text-align: center;"><i class="fas fa-exclamation-circle" style="color:red"></i> Expired Job post</h5><br><br>
+                <?php foreach ($company_posts as $company_post): 
+                    if($company_post['expired'] == 1): ?>
+                        <div class="col-sm-6" style="margin-bottom: 20px;">
+                            <div class="card" style="box-shadow: rgba(0, 0, 0, 0.07) 0px 1px 2px, rgba(0, 0, 0, 0.07) 0px 2px 4px, rgba(0, 0, 0, 0.07) 0px 4px 8px, rgba(0, 0, 0, 0.07) 0px 8px 16px, rgba(0, 0, 0, 0.07) 0px 16px 32px, rgba(0, 0, 0, 0.07) 0px 32px 64px;">
+                            <div class="card-body">
+                                <h5 class="card-title"><?php echo $company_post['title'] ?></h5>
+                                <p class="card-text"><?php echo html_entity_decode($company_post['highlight']) ?></h5></p>
+                                <a class="btn btn-primary" href="single_post_auth.php?post-slug=<?php echo $company_post['slug']; ?>">Read More</a>
+                                <span style="color:red; font-size:medium; font-weight:bold; font-family: Oswald;"> Expired: <?php echo date("F j, Y, g:i a ", strtotime($company_post['updated_at'])); ?></span>
                             </div>
                             </div>
                         </div>
